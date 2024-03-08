@@ -2,12 +2,12 @@
 
 Voiture electrique équipée d'un Raspberry Pi 4 et une carte driver moteur de ThunderBorg via interface web. 
 
-    Objectif du projet : 
+    Objectifs du projet : 
     
     Piloter une voiture au travers du réseau wifi local, puis au travers du réseau 4/5G.
     Comparer les latences et capacité de conduite en temps réel.
 
-Le deuxième objectif étant d'apprendre et combiner les technologies suivantes :
+Il doit aussi permettre d'apprendre et combiner les technologies suivantes :
 
     Raspberry Pi
     Python (v3)
