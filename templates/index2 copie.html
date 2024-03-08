@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PiCar</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    
+    <style type="text/css">
+      html {
+        display: inline-block;
+        font-family: "roboto", helt "sans-serif"; 
+      }
+      body {
+        background-image: -webkit-linear-gradient(#f1f1f5, #fdfdfd);
+        font-family: "roboto", helt "sans-serif"; 
+        /*font-weight: lighter;
+        background-position: center 0; */
+        background-attachment: fixed;
+        color: rgb(11, 0, 0);
+        font-size: 14px;
+      }
+      .cc-btn {
+        border: 0;
+        cursor: pointer;
+        color: #fff;
+        background: rgba(8, 8, 8, 0);
+        font-size: 1em;
+        width: 100px;
+        height: 100px;
+      }
+      .cc-middle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: rgba(94, 98, 112, 0.8);
+      }
+      .cc-btn:hover svg,
+      .cc-middle:hover {
+        opacity: 0.2;
+      }
+       /* bouton STOP/START */
+      .cc-btn:active svg,
+      .cc-middle:hover {
+        opacity: 0.5;
+      }
+      .controlor-c > div {
+        width: 300px;
+        height: 300px;
+        background-color: rgba(255, 255, 255, 0);
+        margin: auto;
+      }
+      .controlor-c > div > div {
+        display: flex;
+      }
+       /* marge du pavé controle */
+      .controlor > div {
+        margin: 20px 0;
+      }
+      
+      .small-btn {
+        color: rgba(255, 255, 255, 0.8);
+        background-color: #5e6270;
+        border: none;
+        height: 48px;
+        border-radius: 4px;
+      }
+ 
+      .control-speed > div {
+        width: 290px;
+        margin: auto;
+      }
+      .control-speed > div > div {
+        display: flex;
+      }
+
+      .control-speed label {
+        flex: 1;
+      }
+      /* boutons de vitesse */
+      .small-btn,
+      .small-btn-active {
+        width: 80px;
+
+      }
+ 
+      .small-btn:hover {
+        background-color: #837f7f;
+      }
+   
+      .small-btn:active {
+        background-color: #f50808;
+      }
+   
+      
+    </style>
+  </head>
+
+<!-- ========== Nav bar ========= -->
+    
+<div id="wrapper">
+    <div class="d-flex flex-column" id="content-wrapper">
+        <div id="content">
+            <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar ">
+                <div class="container-fluid">
+
+                <!-- Titre -->   
+                <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search" style="font-size: 32px;">
+                  <label class="form-label" style="height: 48px;"><strong>PiCar </strong></label>
+                </form>
+                <!-- fin Titre --> 
+
+                <!-- Menu -->                  
+                <div class="d-none d-sm-block topbar-divider"></div>
+                  <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+                    <img class="img-profile" src="static/images/profile.png"></a>
+                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in ">
+                        <li><a class="dropdown-item" href="#exampleModal" data-bs-toggle="modal" data-bs-target="#exampleModal">A propos</a></li>
+                        <li><a class="dropdown-item" href="/logout">Logout</a></li>    
+                        <li><a class="dropdown-item" href="/shutdown">Shutdown</a></li>   
+                    </div>
+                  </div>
+                </div>  
+                <!-- fin Menu --> 
+                
+                <!-- Modal (A propose de PiCar) -->
+                    <div class="modal fade" id="exampleModal" tabindex="-5 " aria-labelledby="#exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel"> A propos de PiCar </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            PiCar est une voiture électrique comprenant 4 moteurs commandées par un Raspberry Pi 4 et une carte ThunderBorg. 
+                            Une caméra de 12Mpx permet de conduire la voiture à distance en utilisant un réseau wifi.
+                            L'ensemble se contrôle au travers d'une interface web en Bootstrap 5 / Flask / Python / Ajax. <br/>
+                            <br/>
+                          </div>
+                          <div class="modal-footer">
+                            V1 - février 2024
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- ========== end Nav bar ========= -->
+
+    <!-- ========== Container  ========== -->
+  <body>
+    <div class="container mt-5">
+      <div class="row">
+
+        <!-- Camera Feed -->
+        <div class="col-md-8">
+          <div class="card mb-4">
+            <div class="card-header">Camera Streaming (640x480)</div>
+            <div class="card-body">
+              <div class="embed-responsive embed-responsive-16by9">
+                <!-- Placeholder for camera feed -->
+                  <img src="/video_feed" width="100%" > 
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direction & Speed Control -->
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-header">Steering and Speed Control</div>
+            <div class="content">
+              <!--- steering & speed control -->
+              <div class="for-move-b controlor">
+                <div class="controlor-c">
+                  <div>
+                    <div>
+
+                      <!--- forward left -->
+                    <label> 
+                        <button class="cc-btn" value="forward-left" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" >
+                            <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 26 26">
+                            <g style="mix-blend-mode: passthrough">
+                              <path
+                                d="M0,2L0,18.1716C0,19.9534,2.15428,20.8457,3.41421,19.5858L19.5858,3.41421C20.8457,2.15428,19.9534,0,18.1716,0L2,0C0.895431,0,0,0.895431,0,2Z"
+                                fill="#000000"
+                                fill-opacity="0.7"/>
+                            </g>
+                          </svg></button>
+                    </label>
+
+                      <!--- forward -->
+                    <label>
+                        <button
+                          class="cc-btn" value="forward" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" >
+                          <svg
+                            width="26"
+                            height="26"
+                            viewBox="0 0 26 26">
+                            <g
+                              style="mix-blend-mode: passthrough"
+                              transform="matrix(0.9999999403953552,0,0,0.9999999403953552,0,0)"
+                            >
+                              <path
+                                d="M12.0248,0.585787L0.589796,12.0208C-0.670133,13.2807,0.222199,15.435,2.00401,15.435L24.8741,15.435C26.6559,15.435,27.5482,13.2807,26.2883,12.0208L14.8533,0.585787C14.0722,-0.195262,12.8059,-0.195262,12.0248,0.585787Z"
+                                fill="#000000"
+                                fill-opacity="0.7"/>
+                            </g>
+                          </svg></button>
+                    </label>
+
+                    <!--- forward right -->
+                    <label>
+                        <button class="cc-btn" value="forward-right" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" >
+                          <svg
+                            width="26"
+                            height="26"
+                            viewBox="0 0 26 26">
+                            <g
+                              style="mix-blend-mode: passthrough"
+                              transform="matrix(0,1,-1,0,23,-23)">
+                              <path
+                                d="M23,2L23,18.1716C23,19.9534,25.15428,20.8457,26.41421,19.5858L42.5858,3.41421C43.8457,2.15428,42.9534,0,41.1716,0L25,0C23.895431,0,23,0.895431,23,2Z"
+                                fill="#000000"
+                                fill-opacity="0.7"
+                              />
+                            </g>
+                          </svg></button
+                      ></label>
+                    </div>
+                    <div>
+
+                    <!--- control panel middle  -->
+
+                    <!--- left -->
+                    <label>
+                        <button
+                          class="cc-btn" value="left" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)">
+                          <svg
+                          width="26"
+                          height="26"
+                          viewBox="0 0 26 26">
+                            <g
+                              style="mix-blend-mode: passthrough"
+                              transform="matrix(0.9999999403953552,0,0,0.9999999403953552,0,0)">
+                              <path
+                                d="M0.585787,14.8533L12.0208,26.2883C13.2807,27.5482,15.435,26.6559,15.435,24.8741L15.435,2.00401C15.435,0.222199,13.2807,-0.670133,12.0208,0.589795L0.585787,12.0248C-0.195262,12.8059,-0.195262,14.0722,0.585787,14.8533Z"
+                                fill="#000000"
+                                fill-opacity="0.7"
+                              />
+                            </g>
+                          </svg></button>
+                    </label>
+
+                    <!--- START/STOP -->
+                    <label>
+                        <button
+                          class="cc-btn cc-middle" value="startstop" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)">
+                          START/STOP
+                        </button>
+                    </label>
+
+                    <!--- right -->
+                    <label>
+                        <button
+                          class="cc-btn" value="right" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)">
+                          <svg
+                          width="26"
+                          height="26"
+                          viewBox="0 0 26 26">
+                            <g
+                              style="mix-blend-mode: passthrough"
+                              transform="matrix(0.9999999403953552,0,0,0.9999999403953552,0,0)">
+                              <path
+                                d="M14.8492,12.0248L3.41422,0.589796C2.15429,-0.670133,-9.53674e-7,0.222199,9.53674e-7,2.00401L9.53674e-7,24.8741C-9.53674e-7,26.6559,2.15429,27.5482,3.41421,26.2883L14.8492,14.8533C15.6303,14.0722,15.6303,12.8059,14.8492,12.0248Z"
+                                fill="#000000"
+                                fill-opacity="0.7"
+                              />
+                            </g>
+                          </svg>
+                        </button>
+                    </label>
+                    </div>
+
+                    <!--- control panel bottom  -->
+
+                    <div>
+                        <!--- backward left -->
+                        <label>
+                            <button
+                            class="cc-btn" value="backward-left" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)">
+                            <svg
+                            width="26"
+                            height="26"
+                            viewBox="0 0 26 26">
+                                <g
+                                style="mix-blend-mode: passthrough"
+                                transform="matrix(0,-1,1,0,-23,23)">
+                                <path
+                                    d="M0,25L0,41.1716C0,42.9534,2.15428,43.8457,3.41421,42.5858L19.5858,26.41421C20.8457,25.15428,19.9534,23,18.1716,23L2,23C0.895431,23,0,23.895431,0,25Z"
+                                    fill="#000000"
+                                    fill-opacity="0.7"/>
+                                </g>
+                            </svg>
+                            </button>
+                        </label>
+
+                        <!--- backward -->
+                        <label>
+                            <button
+                            class="cc-btn" value="backward" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)">
+                            <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 26 12">
+                                <g
+                                style="mix-blend-mode: passthrough"
+                                transform="matrix(0.9999999403953552,0,0,0.9999999403953552,0,0)">
+                                <path
+                                    d="M14.8533,14.8492L26.2883,3.41422C27.5482,2.15429,26.6559,-9.53674e-7,24.8741,9.53674e-7L2.00401,9.53674e-7C0.222199,-9.53674e-7,-0.670133,2.15429,0.589795,3.41421L12.0248,14.8492C12.8059,15.6303,14.0722,15.6303,14.8533,14.8492Z"
+                                    fill="#000000"
+                                    fill-opacity="0.7"/>
+                                </g>
+                            </svg>
+                            </button>
+                        </label>
+
+                        <!--- backward right -->
+                        <label>
+                            <button
+                            class="cc-btn" value="backward-right" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)">
+                                <svg
+                                    width="26"
+                                    height="26"
+                                    viewBox="0 0 26 26">
+                                    <g
+                                    style="mix-blend-mode: passthrough"
+                                    transform="matrix(-1,0,0,-1,46,46)">
+                                    <path
+                                        d="M23,25L23,41.1716C23,42.9534,25.15428,43.8457,26.41421,42.5858L42.5858,26.41421C43.8457,25.15428,42.9534,23,41.1716,23L25,23C23.895431,23,23,23.895431,23,25Z"
+                                        fill="#000000"
+                                        fill-opacity="0.7"/>
+                                    </g>
+                                </svg>
+                            </button>
+                        </label>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!--- speed control   -->
+
+                <div class="control-speed">
+                  <div>
+                    <div id="device-speed-btn">
+
+                        <label>
+                            <button
+                                name="speedbtn"
+                                class="small-btn"
+                                onclick="">
+                                SLOW
+                            </button>
+                        </label>
+
+                        <label>
+                            <button
+                                name="speedbtn"
+                                class="small-btn"
+                                onclick="">
+                                MIDDLE
+                            </button>
+                        </label>
+
+                        <label>
+                            <button
+                                name="speedbtn"
+                                class="small-btn"
+                                onclick="">
+                                FAST
+                            </button>
+                        </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Raspberry Pi Monitoring Parameters -->
+        
+    <!-- <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">Monitoring Parameters</div>
+          <div class="card-body">
+            
+            
+            <div class="mb-3">
+              <h6>Monsterborg :</h6>
+              <p class="mb-1">State : <span id="state"></span></p>
+              <p class="mb-1">RTD [ms]: <span id="rtd"></span></p>
+              <p class="mb-1">Wifi [%]: n/a <span id="wifi"></span></p>
+              <p class="mb-1">Battery  [V]: <span id="battery"></span></p>
+          </div>
+
+          <div class="mb-3">
+              <h6>Raspberry PI 4 :</h6>
+              <p class="mb-1">CPU usage [%]: <span id="cpu_percent"></span></p>
+              <p class="mb-1">CPU temp [°C]: <span id="cpu_temp"></span></p>
+              <p class="mb-1">RAM usage [%]: <span id="ram_usage"></span></p>
+              <p class="mb-1">Network in [MB]: <span id="network_usage_in"></span></p>
+              <p class="mb-1">Network out [MB]: <span id="network_usage_out"></span></p>
+          </div>
+
+          </div>
+        </div>
+      </div>
+      --->
+
+    <!-- Bootstrap JS Bundle with Popper  -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/jquery-3.5.1.js"></script>
+   
+  </body>
+  <!--- 
+  <script>
+    function load_stats() {
+      //requête http get pour obtention des informations de monitoring
+      oReq = new XMLHttpRequest();
+      oReq.onload = StatsListener;
+      oReq.open("GET", "/stats", true);
+      oReq.send();
+    }
+
+    //appel récurrent à la fonction load_info() toutes les 3 secondes
+    setInterval(function () {
+      load_stats();
+    }, 100000);
+  </script>
+
+  <script>
+    function StatsListener() {
+      var obj = JSON.parse(this.responseText);
+      document.getElementById("cpu_percent").innerHTML = obj.cpu_percent;
+      document.getElementById("cpu_temp").innerHTML = obj.cpu_temp;
+      document.getElementById("ram_usage").innerHTML = obj.ram_usage;
+      document.getElementById("network_usage_out").innerHTML = obj.network_usage_out;
+      document.getElementById("network_usage_in").innerHTML = obj.network_usage_in;
+    }
+  </script>
+
+  
+  <script>
+    function reqListener() {
+      //convertit la chaine reçue par ajax en objet JSON
+      //var obj = JSON.parse(JSON.stringify(responseText));
+      var obj = JSON.parse(this.responseText);
+      document.getElementById("battery").innerHTML = obj.battery;
+      if (obj.state) {
+        document.getElementById("state").innerHTML = "Running";
+      } else {
+        document.getElementById("state").innerHTML = "Stopped";
+      }
+    }
+  </script>
+
+  <script>
+    function load_info() {
+      //requête http get pour obtention des informations de monitoring
+      oReq = new XMLHttpRequest();
+      oReq.onload = reqListener;
+      oReq.open("GET", "/info", true);
+      oReq.send();
+    }
+
+    //appel récurrent à la fonction load_info() toutes les 3 secondes
+    setInterval(function () {
+      load_info();
+    }, 1000);
+  </script>
+
+  <script>
+    function rtd() {
+      //requête http get pour calculer le round trip delay
+
+      var obj;
+      var deltaTime;
+      var rtd;
+
+      var rtdReq = new XMLHttpRequest();
+      var t1 = new Date();
+
+      rtdReq.open("GET", "/rtd", true);
+      rtdReq.onload = function () {
+        obj = JSON.parse(this.responseText);
+        if (obj.rtd == "OK") {
+          t2 = new Date();
+          deltaTime = t2 - t1;
+          rtd = deltaTime;
+          document.getElementById("rtd").innerHTML = rtd;
+        }
+      };
+      rtdReq.send();
+    }
+
+    //appel récurrent à la fonction rtd() toutes les 3 secondes
+    setInterval(function () {
+      rtd();
+    }, 300000);
+  </script>
+    
+    -->
+
+<script>
+    function move_on_mouse_down(direction) {
+      var text;
+      text = "/" + direction;
+      this.className = 'btn btn-success btn-lg disabled';
+      console.log(text);
+      $.get(text);
+    }
+    </script>
+  
+    <script>
+      function move_on_mouse_up(direction) {
+        var text;
+        text = "/" + direction +"?method=stop";
+        this.className = 'btn btn-success btn-lg disabled';
+        console.log(text);
+        $.get(text);
+      }
+      </script>
+</html>

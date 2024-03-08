@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PiCar</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+     
+      /* Limiter la largeur de la page */
+      @media (min-width: 1200px) {
+        .container {
+          max-width: 1200px; /* Changer la valeur selon vos besoins */
+        }
+      }
+    </style>
+  </head>
+
+<!-- ========== Nav bar ========= -->
+    
+<div id="wrapper">
+    <div class="d-flex flex-column" id="content-wrapper">
+        <div id="content">
+            <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar ">
+                <div class="container-fluid">
+
+                <!-- Titre -->   
+                <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search" style="font-size: 32px;">
+                  <label class="form-label" style="height: 48px;"><strong>PiCar </strong></label>
+                </form>
+                <!-- fin Titre --> 
+
+                <!-- Menu -->                  
+                <div class="d-none d-sm-block topbar-divider"></div>
+                  <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+                    <img class="img-profile" src="static/images/profile.png"></a>
+                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in ">
+                        <li><a class="dropdown-item" href="#exampleModal" data-bs-toggle="modal" data-bs-target="#exampleModal">A propos</a></li>
+                        <li><a class="dropdown-item" href="/logout">Logout</a></li>    
+                        <li><a class="dropdown-item" href="/shutdown">Shutdown</a></li>   
+                    </div>
+                  </div>
+                </div>  
+                <!-- fin Menu --> 
+                
+                <!-- Modal (A propose de) -->
+                    <div class="modal fade" id="exampleModal" tabindex="-5 " aria-labelledby="#exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel"> A propos de PiCar </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            PiCar est une voiture électrique comprenant 4 moteurs commandées par un Raspberry Pi 4 et une carte ThunderBorg. 
+                            Une caméra de 12Mpx permet de conduire la voiture à distance en utilisant un réseau wifi.
+                            L'ensemble se contrôle au travers d'une interface web en Bootstrap 5 / Flask / Python / Ajax. <br/>
+                            <br/>
+                          </div>
+                          <div class="modal-footer">
+                            V1 - février 2024
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- ========== end Nav bar ========= -->
+
+    <!-- ========== Container  ========== -->
+  <body>
+    <div class="container mt-5">
+      <div class="row">
+        <!-- Raspberry Pi Monitoring Parameters -->
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">Monitoring Parameters</div>
+            <div class="card-body">
+              <!--  monitoring parameters -->
+              
+              <div class="mb-3">
+                <h6>Monsterborg :</h6>
+                <p class="mb-1">State : <span id="state"></span></p>
+                <p class="mb-1">RTD [ms]: <span id="rtd"></span></p>
+                <p class="mb-1">Wifi [%]: n/a <span id="wifi"></span></p>
+                <p class="mb-1">Battery  [V]: <span id="battery"></span></p>
+            </div>
+
+            <div class="mb-3">
+                <h6>Raspberry PI 4 :</h6>
+                <p class="mb-1">CPU usage [%]: <span id="cpu_percent"></span></p>
+                <p class="mb-1">CPU temp [°C]: <span id="cpu_temp"></span></p>
+                <p class="mb-1">RAM usage [%]: <span id="ram_usage"></span></p>
+                <p class="mb-1">Network in [MB]: <span id="network_usage_in"></span></p>
+                <p class="mb-1">Network out [MB]: <span id="network_usage_out"></span></p>
+            </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Camera Feed -->
+        <div class="col-md-5">
+          <div class="card mb-4">
+            <div class="card-header">Camera Feed</div>
+            <div class="card-body">
+              <div class="embed-responsive embed-responsive-16by9">
+                <!-- Placeholder for camera feed -->
+                  <img src="/video_feed" width="100%" > 
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direction Control -->
+        <div class="col-md-3">
+          <div class="card mb-4">
+            <div class="card-header">Steering and Speed Control</div>
+            <div class="content">
+              <!--- steering & speed control -->
+
+              <form method="GET" action="/startstop" class="center-block">
+                <button
+                  id="STOP"
+                  name="state"
+                  type="submit"
+                  class="btn btn-danger btn-lg"
+                  value="STOP"
+                  style="margin: 20px"
+                >
+                  STOP
+                </button>
+
+                <button
+                  id="START"
+                  name="state"
+                  type="submit"
+                  class="btn btn-primary btn-lg"
+                  value="START"
+                  style="margin: 20px"
+                >
+                  START
+                </button>
+              </form>
+              <center>
+                <div class="btn-group-lg" role="group" > 
+                  <button id="cmd" name="up" type="button" class="btn btn-secondary" style="margin: 20px;" value="forward" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)"> forward</button> 
+                  <br/>
+                  <button id="cmd" name="left" type="button" class="btn btn-secondary"  value="left" onmouseup="move_on_mouse_up(this.value)" style="margin:25px" onmousedown="move_on_mouse_down(this.value)"> left </button> 
+                  <button id="cmd" name="right" type="button" class="btn btn-secondary"  value="right" onmouseup="move_on_mouse_up(this.value)" style="margin:25px" onmousedown="move_on_mouse_down(this.value)"> right </button> 
+                  <br/>
+                  <button id="cmd" name="down" type="button" class="btn btn-secondary" style="margin:20px;" value="backward"  onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)">backward</button>
+                </div>
+              </center>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper  -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/jquery-3.5.1.js"></script>
+   
+  </body>
+
+  <script>
+    function load_stats() {
+      //requête http get pour obtention des informations de monitoring
+      oReq = new XMLHttpRequest();
+      oReq.onload = StatsListener;
+      oReq.open("GET", "/stats", true);
+      oReq.send();
+    }
+
+    //appel récurrent à la fonction load_info() toutes les 3 secondes
+    setInterval(function () {
+      load_stats();
+    }, 1000);
+  </script>
+
+  <script>
+    function StatsListener() {
+      var obj = JSON.parse(this.responseText);
+      document.getElementById("cpu_percent").innerHTML = obj.cpu_percent;
+      document.getElementById("cpu_temp").innerHTML = obj.cpu_temp;
+      document.getElementById("ram_usage").innerHTML = obj.ram_usage;
+      document.getElementById("network_usage_out").innerHTML = obj.network_usage_out;
+      document.getElementById("network_usage_in").innerHTML = obj.network_usage_in;
+    }
+  </script>
+
+  
+  <script>
+    function reqListener() {
+      //convertit la chaine reçue par ajax en objet JSON
+      //var obj = JSON.parse(JSON.stringify(responseText));
+      var obj = JSON.parse(this.responseText);
+      document.getElementById("battery").innerHTML = obj.battery;
+      if (obj.state) {
+        document.getElementById("state").innerHTML = "Running";
+      } else {
+        document.getElementById("state").innerHTML = "Stopped";
+      }
+    }
+  </script>
+
+  <script>
+    function load_info() {
+      //requête http get pour obtention des informations de monitoring
+      oReq = new XMLHttpRequest();
+      oReq.onload = reqListener;
+      oReq.open("GET", "/info", true);
+      oReq.send();
+    }
+
+    //appel récurrent à la fonction load_info() toutes les 3 secondes
+    setInterval(function () {
+      load_info();
+    }, 1000);
+  </script>
+
+  <script>
+    function rtd() {
+      //requête http get pour calculer le round trip delay
+
+      var obj;
+      var deltaTime;
+      var rtd;
+
+      var rtdReq = new XMLHttpRequest();
+      var t1 = new Date();
+
+      rtdReq.open("GET", "/rtd", true);
+      rtdReq.onload = function () {
+        obj = JSON.parse(this.responseText);
+        if (obj.rtd == "OK") {
+          t2 = new Date();
+          deltaTime = t2 - t1;
+          rtd = deltaTime;
+          document.getElementById("rtd").innerHTML = rtd;
+        }
+      };
+      rtdReq.send();
+    }
+
+    //appel récurrent à la fonction rtd() toutes les 3 secondes
+    setInterval(function () {
+      rtd();
+    }, 3000);
+  </script>
+
+  <script>
+    function move_on_mouse_down(direction) {
+      var text;
+      text = "/" + direction;
+      this.className = 'btn btn-success btn-lg disabled';
+      console.log(text);
+      $.get(text);
+    }
+    </script>
+  
+    <script>
+      function move_on_mouse_up(direction) {
+        var text;
+        text = "/" + direction +"?method=stop";
+        this.className = 'btn btn-success btn-lg disabled';
+        console.log(text);
+        $.get(text);
+      }
+      </script>
+</html>
