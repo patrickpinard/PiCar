@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PiCar</title>
+    <title>PiCar V1</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -115,10 +115,23 @@
         height: 120px; /* Hauteur fixe de la carte */
          }
 
-      #rtd, #battery, #ram_usage, #cpu_percent, #cpu_temp, #wifi, #connectivity {
+      #rtd, #Battery_level, #RAM_usage, #CPU_percent, #CPU_temp, #Signal_level {
           font-size: 28px; /* Taille de police plus grande */
           /*justify-content: center;  Centrer horizontalement */
           text-align: center; /* Centrer verticalement */
+        }
+
+      .videocard {
+          width: 100%; /* Largeur de la carte */
+          height: 400px; /* Hauteur de la carte */
+          height: auto; 
+          overflow: hidden; /* Pour empêcher le débordement du contenu */
+        }
+      
+      .videocard-streaming {
+          width: 100%; /* La vidéo remplit entièrement la largeur de la carte */
+          height: auto; /* La vidéo remplit entièrement la hauteur de la carte */
+          object-fit: cover; /* Ajustement de la vidéo pour remplir l'espace disponible sans déformation */
         }
       
     </style>
@@ -134,7 +147,7 @@
 
                 <!-- Titre -->   
                 <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search" style="font-size: 32px;">
-                  <label class="form-label" style="height: 48px;"><strong>PiCar </strong></label>
+                  <label class="form-label" style="height: 48px;"><strong>PiCar Command Center V1</strong></label>
                 </form>
                 <!-- fin Titre --> 
 
@@ -161,12 +174,12 @@
                           </div>
                           <div class="modal-body">
                             PiCar est une voiture électrique comprenant 4 moteurs commandées par un Raspberry Pi 4 et une carte ThunderBorg. 
-                            Une caméra de 12Mpx permet de conduire la voiture à distance en utilisant un réseau wifi.
-                            L'ensemble se contrôle au travers d'une interface web en Bootstrap 5 / Flask / Python / Ajax. <br/>
-                            <br/>
+                            Une caméra de 12Mpx de type Pi Camera 3 permet de conduire la voiture à distance en utilisant un réseau wifi.
+                            L'ensemble se contrôle au travers d'une interface web en Bootstrap 5 / Flask / Python / Ajax. 
+                            <p>&nbsp;</p> 
                           </div>
                           <div class="modal-footer">
-                            V1 - février 2024
+                            V1 - 9 mars 2024
                           </div>
                         </div>
                       </div>
@@ -179,18 +192,17 @@
 
     <!-- ========== Container  ========== -->
   <body>
-    <div class="container mt-5">
+    <div class="container-fluid mt-0">
       <div class="row">
 
         <!-- Camera Feed -->
         <div class="col-md-8">
-          <div class="card mb-4 fixed-height-card min-w-0">
+          <div class="card mb-1 fixed-height-card ">
             <div class="card-header">Camera Streaming (1280x720)</div>
-             <!-- AMELIORATION : Intégrer la qualité vidé dans le titre -->
             <div class="card-body">
-              <div class="embed-responsive ">
+              <div class="embed-responsive videocard-streaming">
                 <!-- Placeholder for camera feed    embed-responsive-16by9-->
-                  <img src="/video_feed" width="100%" > 
+                  <img src="/video_feed" width="100%"> 
               </div>
             </div>
           </div>
@@ -206,8 +218,8 @@
               <div class="for-move-b controlor">
                 <div class="controlor-c">
                   <div>
+                    <!--- control panel top  -->
                     <div>
-
                         <!--- forward left -->
                         <label> 
                             <button class="cc-btn" value="forward-left" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" >
@@ -265,10 +277,10 @@
                             </button>
                         </label>
                           
-                    </div>
-                  <div>
+                      </div>
+                    <div>
 
-                    <!--- control panel middle  -->
+                  <!--- control panel middle  -->
 
                     <!--- left -->
                     <label>
@@ -292,6 +304,7 @@
                     </label>
 
                     <!--- START/STOP -->
+                    
                     <form method="GET" action="/startstop">
                       <label>
                           <button id="startstop" class="cc-btn cc-middle" value="startstop" type="submit">
@@ -322,8 +335,7 @@
                     </label>
                     </div>
 
-                    <!--- control panel bottom  -->
-
+                  <!--- control panel bottom  -->
                     <div>
                         <!--- backward left -->
                         <label>
@@ -398,37 +410,40 @@
                       <div id="device-speed-btn">
                         
                         <form method="GET" action="/speed" >
+
+                          <!--- Bouton de vitesse SLOW -->   
                           <label>
                               <button
                                   name="speed"
                                   class="small-btn"
                                   type="submit"
                                   value="slow"
-                                  id="slow">
+                                  id="slowspeed">
                                   SLOW
                               </button>
                           </label>
                       
 
-                        
+                          <!--- Bouton de vitesse NORMAL -->   
                           <label>
                               <button
                                   name="speed"
                                   class="small-btn"
                                   type="submit"
                                   value="normal"
-                                  id="normal">
+                                  id="normalspeed">
                                   NORMAL
                               </button>
                           </label>
-                        
+                          
+                          <!--- Bouton de vitesse FAST -->   
                           <label>
                               <button
                                   name="speed"
                                   class="small-btn"
                                   type="submit"
                                   value="fast"
-                                  id="fast">
+                                  id="fastspeed">
                                   FAST
                               </button>
                           </label>
@@ -444,18 +459,20 @@
       </div>
     </div>
   </div>
-  <!-- Monitoring Parameters ---> 
+  <!-- Monitoring Parameters   ---> 
   <div class="row">
+    
+    <!--- Affichage du niveau de la batterie en Volt -->    
     <div class="col-md-2">
       <div class="card mb-2 fixed-height-card-monitor min-w-0">
         <div class="card-header">Battery [V]</div>
         <div class="card-body text-center">
-          <span id="battery"></span>
+          <span id="Battery_level"></span>
         </div>
       </div>
     </div>
     
-
+    <!--- Affichage du Round Trip Delay en ms -->
     <div class="col-md-2">
       <div class="card mb-2 fixed-height-card-monitor min-w-0">
         <div class="card-header">RTD [ms]</div>
@@ -465,56 +482,60 @@
       </div>
     </div>
 
+    <!--- Affichage du niveau de qualité de la connectivité (à faire) -->
     <div class="col-md-2">
       <div class="card mb-2 fixed-height-card-monitor min-w-0">
-        <div class="card-header">Network </div>
+        <div class="card-header">Wifi [dBm]</span> </div>
         <div class="card-body text-center">
-          <span id="connectivity">GOOD</span>
+          <span id="Signal_level"> </span> <br>
+          <span id="Wifi_quality"></span>
         </div>
       </div>
     </div>
 
+    <!--- Affichage de l'usage de la RAM en % -->
     <div class="col-md-2">
       <div class="card mb-2 fixed-height-card-monitor min-w-0">
         <div class="card-header">RAM usage [%]</div>
         <div class="card-body  text-center">
-          <span id="ram_usage"></span>
+          <span id="RAM_usage"></span>
         </div>
       </div>
     </div>
 
+    <!--- Affichage de l'usage du CPU en % -->
     <div class="col-md-2">
       <div class="card mb-2 fixed-height-card-monitor min-w-0">
         <div class="card-header">CPU usage [%]</div>
         <div class="card-body  text-center">
-          <span id="cpu_percent"></span>
+          <span id="CPU_percent"></span>
         </div>
       </div>
     </div>
 
+    <!--- Affichage de la température du CPU -->
     <div class="col-md-2">
       <div class="card mb-2 fixed-height-card-monitor min-w-0">
         <div class="card-header">CPU temp [°C]</div>
         <div class="card-body  text-center">
-          <span id="cpu_temp"></span>
+          <span id="CPU_temp"></span>
         </div>
       </div>
     </div>
   </div>
 
-  
-   
-    <!-- Bootstrap JS Bundle with Popper  -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="static/js/jquery-3.5.1.js"></script>
+  <!-- Importation des fichiers javascript Bootstrap, Popper& jQuery via CDN  -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
    
   </body>
-  
+
+
   <script>
     function load_stats() {
       //requête http get pour obtention des informations de monitoring
       oReq = new XMLHttpRequest();
-      oReq.onload = StatsListener;
+      oReq.onload = StatisticUpdater;
       oReq.open("GET", "/stats", true);
       oReq.send();
     }
@@ -522,59 +543,69 @@
     //appel récurrent à la fonction load_info() toutes les 3 secondes
     setInterval(function () {
       load_stats();
-    }, 3000);
+    }, 1000);
   </script>
 
   <script>
-    function StatsListener() {
+    
+    //fonction pour récupérer les statistiques du Pi4 (CPU usage, RAM usage et Temperature CPU)
+    
+    function StatisticUpdater() {
       var obj = JSON.parse(this.responseText);
-      document.getElementById("cpu_percent").innerHTML = obj.cpu_percent;
-      document.getElementById("cpu_temp").innerHTML = obj.cpu_temp;
-      document.getElementById("ram_usage").innerHTML = obj.ram_usage;
-      console.log(obj)
-    }
-  </script>
+      
+      //console.log(obj);
 
-  
-  <script>
-    function reqListener() {
-      //convertit la chaine reçue par ajax en objet JSON
-      //var obj = JSON.parse(JSON.stringify(responseText));
-      var obj = JSON.parse(this.responseText);
-      var button = document.getElementById('startstop');
-      document.getElementById("battery").innerHTML = obj.battery;
-      if (obj.state) {
-        //document.getElementById("state").innerHTML = "Running";
+      var CPU_temp = obj.CPU_temp.toFixed(0);
+      document.getElementById("CPU_percent").innerHTML = obj.CPU_percent;
+      document.getElementById("CPU_temp").innerHTML = CPU_temp;
+      document.getElementById("RAM_usage").innerHTML = obj.RAM_usage;
+      document.getElementById("Wifi_quality").innerHTML = obj.Wifi_quality;
+      document.getElementById("Signal_level").innerHTML = obj.Signal_level;
+      document.getElementById("Battery_level").innerHTML = obj.Battery_level;
+      //document.getElementById("State").innerHTML = obj.State;
+    
+      // Battery level warning
+
+      var BatteryValueText = document.getElementById("Battery_level").textContent;
+      var BatteryValue = parseInt(BatteryValueText, 10);
+      if (Math.abs(BatteryValue) < 10) {
+        document.getElementById("Battery_level").style.color = "red";
+      } else {
+        document.getElementById("Battery_level").style.color = "green";
+      };
+
+      // Wifi Signal update
+
+      var signalValueText = document.getElementById("Signal_level").textContent;
+      var signalValue = parseInt(signalValueText, 10);
+      if (Math.abs(signalValue) > 67) {
+        console.log("Wifi signal insuffisant");
+        document.getElementById("Signal_level").style.color = "red";
+        document.getElementById("Wifi_quality").style.color = "red"
+      } else {
+        document.getElementById("Signal_level").style.color = "green";
+        document.getElementById("Wifi_quality").style.color = "green"
+      };
+
+      // State update
+
+      var button = document.getElementById('startstop')
+      if (obj.State) {
         button.textContent = 'STOP';
         button.style.backgroundColor = '#4CAF50'; // Couleur de fond verte
         button.style.color = 'white'; // Couleur du texte blanc
         obj.state = false;
 
       } else {
-        //document.getElementById("state").innerHTML = "Stopped";
         button.textContent = 'START';
         button.style.backgroundColor = 'red'; // Couleur de fond rouge
         button.style.color = 'white'; // Couleur du texte blanc
         obj.state = true;
-
       }
+
     }
   </script>
 
-  <script>
-    function load_info() {
-      //requête http get pour obtention des informations de monitoring
-      oReq = new XMLHttpRequest();
-      oReq.onload = reqListener;
-      oReq.open("GET", "/info", true);
-      oReq.send();
-    }
-
-    //appel récurrent à la fonction load_info() toutes les secondes
-    setInterval(function () {
-      load_info();
-    },3000);
-  </script>
 
   <script>
     function rtd() {
@@ -605,26 +636,23 @@
       rtd();
     }, 1000);
   </script>
-    
-   
 
-<script>
+  <script>
+    //requete GET pour envoi des commandes de déplacements lorsque bouton enfoncé
     function move_on_mouse_down(direction) {
       var text;
       text = "/" + direction;
-      //this.className = 'btn btn-success btn-lg disabled';
-      //console.log(text);
       $.get(text);
     }
-    </script>
+  </script>
   
-    <script>
+  <script>
+    //requete GET pour envoi des commandes de déplacements lorsque bouton relaché
       function move_on_mouse_up(direction) {
         var text;
         text = "/" + direction +"?method=stop";
-        //this.className = 'btn btn-success btn-lg disabled';
-        //console.log(text);
         $.get(text);
       }
-      </script>
+  </script>
+
 </html>

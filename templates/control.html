@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PiCar</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    
+    <style type="text/css">
+      html {
+        display: inline-block;
+        font-family: "roboto", helt "sans-serif"; 
+      }
+      body {
+        background-image: -webkit-linear-gradient(#f1f1f5, #fdfdfd);
+        font-family: "roboto", helt "sans-serif"; 
+        /*font-weight: lighter;
+        background-position: center 0; */
+        background-attachment: fixed;
+        color: rgb(11, 0, 0);
+        font-size: 14px;
+      }
+      .cc-btn {
+        border: 0;
+        cursor: pointer;
+        color: #fff;
+        background: rgba(8, 8, 8, 0);
+        font-size: 1em;
+        width: 100px;
+        height: 100px;
+      }
+      .cc-middle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: rgba(94, 98, 112, 0.8);
+      }
+      .cc-btn:hover svg,
+      .cc-middle:hover {
+        opacity: 0.2;
+      }
+       /* bouton STOP/START */
+      .cc-btn:active svg,
+      .cc-middle:hover {
+        opacity: 0.5;
+      }
+      .controlor-c > div {
+        width: 300px;
+        height: 300px;
+        background-color: rgba(255, 255, 255, 0);
+        margin: auto;
+      }
+      .controlor-c > div > div {
+        display: flex;
+      }
+       /* marge du pavé controle */
+      .controlor > div {
+        margin: 20px 0;
+      }
+      
+      .small-btn {
+        color: rgba(255, 255, 255, 0.8);
+        background-color: #5e6270;
+        border: none;
+        height: 48px;
+        border-radius: 4px;
+      }
+ 
+      .control-speed > div {
+        width: 290px;
+        margin: auto;
+      }
+      .control-speed > div > div {
+        display: flex;
+      }
+
+      .control-speed label {
+        flex: 1;
+      }
+      /* boutons de vitesse */
+      .small-btn,
+      .small-btn-active {
+        width: 80px;
+
+      }
+ 
+      .small-btn:hover {
+        background-color: #837f7f;
+      }
+   
+      .small-btn:active {
+        background-color: #f50808;
+      }
+   
+      
+    </style>
+  </head>
+
+
+  <!-- ========== Container  ========== -->
+  <body>
+    <div class="container mt-5">
+      
+        <!-- Direction & Speed Control -->
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-header">Steering and Speed Control</div>
+            <div class="content">
+              <!--- steering & speed control -->
+              <div class="for-move-b controlor">
+                <div class="controlor-c">
+                  <div>
+                    <div>
+
+                      <!--- forward left -->
+                    <label> 
+                        <button class="cc-btn" value="forward-left" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)"ontouchstart="move_on_mouse_up(this.value)" ontouchcancel="move_on_mouse_down(this.value)" >
+                            <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 26 26">
+                            <g style="mix-blend-mode: passthrough">
+                              <path
+                                d="M0,2L0,18.1716C0,19.9534,2.15428,20.8457,3.41421,19.5858L19.5858,3.41421C20.8457,2.15428,19.9534,0,18.1716,0L2,0C0.895431,0,0,0.895431,0,2Z"
+                                fill="#000000"
+                                fill-opacity="0.7"/>
+                            </g>
+                          </svg></button>
+                    </label>
+
+                      <!--- forward -->
+                    <label>
+                        <button
+                          class="cc-btn" value="forward" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" ontouchstart="move_on_mouse_up(this.value)" ontouchcancel="move_on_mouse_down(this.value)">
+                          <svg
+                            width="26"
+                            height="26"
+                            viewBox="0 0 26 26">
+                            <g
+                              style="mix-blend-mode: passthrough"
+                              transform="matrix(0.9999999403953552,0,0,0.9999999403953552,0,0)">
+                              <path
+                                d="M12.0248,0.585787L0.589796,12.0208C-0.670133,13.2807,0.222199,15.435,2.00401,15.435L24.8741,15.435C26.6559,15.435,27.5482,13.2807,26.2883,12.0208L14.8533,0.585787C14.0722,-0.195262,12.8059,-0.195262,12.0248,0.585787Z"
+                                fill="#000000"
+                                fill-opacity="0.7"/>
+                            </g>
+                          </svg></button>
+                    </label>
+
+                    <!--- forward right -->
+                    <label>
+                        <button class="cc-btn" value="forward-right" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" ontouchstart="move_on_mouse_up(this.value)" ontouchcancel="move_on_mouse_down(this.value)">
+                          <svg
+                            width="26"
+                            height="26"
+                            viewBox="0 0 26 26">
+                            <g
+                              style="mix-blend-mode: passthrough"
+                              transform="matrix(0,1,-1,0,23,-23)">
+                              <path
+                                d="M23,2L23,18.1716C23,19.9534,25.15428,20.8457,26.41421,19.5858L42.5858,3.41421C43.8457,2.15428,42.9534,0,41.1716,0L25,0C23.895431,0,23,0.895431,23,2Z"
+                                fill="#000000"
+                                fill-opacity="0.7"
+                              />
+                            </g>
+                          </svg></button
+                      ></label>
+                    </div>
+                    <div>
+
+                    <!--- control panel middle  -->
+
+                    <!--- left -->
+                    <label>
+                        <button
+                          class="cc-btn" value="left" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" ontouchstart="move_on_mouse_up(this.value)" ontouchcancel="move_on_mouse_down(this.value)">
+                          <svg
+                            width="26"
+                            height="26"
+                            viewBox="0 0 26 26">
+                            <g
+                              style="mix-blend-mode: passthrough"
+                              transform="matrix(0.9999999403953552,0,0,0.9999999403953552,0,0)">
+                              <path
+                                d="M0.585787,14.8533L12.0208,26.2883C13.2807,27.5482,15.435,26.6559,15.435,24.8741L15.435,2.00401C15.435,0.222199,13.2807,-0.670133,12.0208,0.589795L0.585787,12.0248C-0.195262,12.8059,-0.195262,14.0722,0.585787,14.8533Z"
+                                fill="#000000"
+                                fill-opacity="0.7"
+                              />
+                            </g>
+                          </svg></button>
+                    </label>
+
+                    <!--- START/STOP -->
+                    <label>
+                        <button
+                          class="cc-btn cc-middle" value="startstop" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" ontouchstart="move_on_mouse_up(this.value)" ontouchcancel="move_on_mouse_down(this.value)">
+                          START/STOP
+                        </button>
+                    </label>
+
+                    <!--- right -->
+                    <label>
+                        <button
+                          class="cc-btn" value="right" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" ontouchstart="move_on_mouse_up(this.value)" ontouchcancel="move_on_mouse_down(this.value)">
+                          <svg
+                            width="26"
+                            height="26"
+                            viewBox="0 0 26 26">
+                            <g
+                              style="mix-blend-mode: passthrough"
+                              transform="matrix(0.9999999403953552,0,0,0.9999999403953552,0,0)">
+                              <path
+                                d="M14.8492,12.0248L3.41422,0.589796C2.15429,-0.670133,-9.53674e-7,0.222199,9.53674e-7,2.00401L9.53674e-7,24.8741C-9.53674e-7,26.6559,2.15429,27.5482,3.41421,26.2883L14.8492,14.8533C15.6303,14.0722,15.6303,12.8059,14.8492,12.0248Z"
+                                fill="#000000"
+                                fill-opacity="0.7"
+                              />
+                            </g>
+                          </svg>
+                        </button>
+                    </label>
+                    </div>
+
+                    <!--- control panel bottom  -->
+
+                    <div>
+                        <!--- backward left -->
+                        <label>
+                            <button
+                            class="cc-btn" value="backward-left" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" ontouchstart="move_on_mouse_up(this.value)" ontouchcancel="move_on_mouse_down(this.value)">
+                            <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 26 26">
+                                <g
+                                style="mix-blend-mode: passthrough"
+                                transform="matrix(0,-1,1,0,-23,23)">
+                                <path
+                                    d="M0,25L0,41.1716C0,42.9534,2.15428,43.8457,3.41421,42.5858L19.5858,26.41421C20.8457,25.15428,19.9534,23,18.1716,23L2,23C0.895431,23,0,23.895431,0,25Z"
+                                    fill="#000000"
+                                    fill-opacity="0.7"/>
+                                </g>
+                            </svg>
+                            </button>
+                        </label>
+
+                        <!--- backward -->
+                        <label>
+                            <button
+                            class="cc-btn" value="backward" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" ontouchstart="move_on_mouse_up(this.value)" ontouchcancel="move_on_mouse_down(this.value)">
+                            <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 26 12">
+                                <g
+                                style="mix-blend-mode: passthrough"
+                                transform="matrix(0.9999999403953552,0,0,0.9999999403953552,0,0)">
+                                <path
+                                    d="M14.8533,14.8492L26.2883,3.41422C27.5482,2.15429,26.6559,-9.53674e-7,24.8741,9.53674e-7L2.00401,9.53674e-7C0.222199,-9.53674e-7,-0.670133,2.15429,0.589795,3.41421L12.0248,14.8492C12.8059,15.6303,14.0722,15.6303,14.8533,14.8492Z"
+                                    fill="#000000"
+                                    fill-opacity="0.7"/>
+                                </g>
+                            </svg>
+                            </button>
+                        </label>
+
+                        <!--- backward right -->
+                        <label>
+                            <button
+                            class="cc-btn" value="backward-right" onmouseup="move_on_mouse_up(this.value)" onmousedown="move_on_mouse_down(this.value)" ontouchstart="move_on_mouse_up(this.value)" ontouchcancel="move_on_mouse_down(this.value)">
+                                <svg
+                                    width="26"
+                                    height="26"
+                                    viewBox="0 0 26 26">
+                                    <g
+                                    style="mix-blend-mode: passthrough"
+                                    transform="matrix(-1,0,0,-1,46,46)">
+                                    <path
+                                        d="M23,25L23,41.1716C23,42.9534,25.15428,43.8457,26.41421,42.5858L42.5858,26.41421C43.8457,25.15428,42.9534,23,41.1716,23L25,23C23.895431,23,23,23.895431,23,25Z"
+                                        fill="#000000"
+                                        fill-opacity="0.7"/>
+                                    </g>
+                                </svg>
+                            </button>
+                        </label>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!--- speed control   -->
+
+                <div class="control-speed">
+                  <div>
+                    <div id="device-speed-btn">
+
+                        <label>
+                            <button
+                                name="speedbtn"
+                                class="small-btn"
+                                onclick="">
+                                SLOW
+                            </button>
+                        </label>
+
+                        <label>
+                            <button
+                                name="speedbtn"
+                                class="small-btn"
+                                onclick="">
+                                MIDDLE
+                            </button>
+                        </label>
+
+                        <label>
+                            <button
+                                name="speedbtn"
+                                class="small-btn"
+                                onclick="">
+                                FAST
+                            </button>
+                        </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <!-- Bootstrap JS Bundle with Popper  -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/jquery-3.5.1.js"></script>
+   
+  </body>
+  
+
+<script>
+    function move_on_mouse_down(direction) {
+      var text;
+      text = "/" + direction;
+      this.className = 'btn btn-success btn-lg disabled';
+      console.log(text);
+      $.get(text);
+    }
+    </script>
+  
+    <script>
+      function move_on_mouse_up(direction) {
+        var text;
+        text = "/" + direction +"?method=stop";
+        this.className = 'btn btn-success btn-lg disabled';
+        console.log(text);
+        $.get(text);
+      }
+      </script>
+</html>

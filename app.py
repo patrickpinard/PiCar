@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 # Auteur    : Patrick Pinard
-# Date      : 9.3.2014
-# Objet     : Pilotage de Monsterborg avec interface web basée sur API RESTful Flask et bootstrap
-# Version   : 9
-#
-#  {} = "alt/option" + "(" ou ")"
-#  [] = "alt/option" + "5" ou "6"
-#   ~  = "alt/option" + n
-#   \  = Alt + Maj + /
-
+# Date      : 12.3.2014
+# Objet     : Pilotage d'une voiture électrique "PiCar" avec interface web basée sur API RESTful Flask et Bootstrap
+# Version   : 2  (ajout niveau du signal wifi et du niveau de batterie)
 
 import io
 import logging
@@ -23,8 +17,9 @@ import psutil
 from flask import Flask, Response, jsonify, render_template, request, session
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
+from WifiQualityChecker import WifiQualityChecker
 
-global Borg, state, battery, cpu_usage, signal
+global PiCar, state, battery, cpu_usage, signal
 
 PASSWORD = "password"
 USERNAME = "admin"
@@ -34,7 +29,7 @@ steering = 0.2
 
 # fichier log
 logging.basicConfig(
-    filename="app.log",
+    filename="PiCar.log",
     filemode="w",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -55,7 +50,7 @@ class StreamingOutput(io.BufferedIOBase):
 
 
 def genFrames():
-    """Video streaming generator function."""
+    """Generateur du streaming de la Camera."""
     with picamera2.Picamera2() as camera:
 
         output = StreamingOutput()
@@ -73,40 +68,43 @@ def genFrames():
             yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n")
 
 
-# defines the route that will access the video feed and call the feed function
 @app.route("/video_feed")
 def video_feed():
+    """Route pour le streaming de la Camera."""
     return Response(genFrames(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
-# statistiques du Raspberry Pi
 @app.route("/stats", methods=["GET", "POST"])
 def stats():
-    """Provide system and camera stats."""
+    """Informations statistiques sur le PI et la Camera."""
     logging.info("lecture des statistiques")
+    Wifi_Quality, Signal_level, Link_Quality = WifiQualityChecker("wlan0")
     stats = jsonify(
         {
-            "cpu_percent": psutil.cpu_percent(),
-            "cpu_temp": psutil.sensors_temperatures()["cpu_thermal"][0].current,
-            "ram_usage": psutil.virtual_memory().percent,
+            "CPU_percent": psutil.cpu_percent(),
+            "CPU_temp": psutil.sensors_temperatures()["cpu_thermal"][0].current,
+            "RAM_usage": psutil.virtual_memory().percent,
+            "Wifi_quality": Wifi_Quality,
+            "Signal_level": Signal_level,
+            "Battery_level" : PiCar.battery(),
+            "State": PiCar.running
         }
     )
     logging.info(stats)
-    return stats
+    return statss
 
 
-# réponse pour calcul du Round Trip Delay
 @app.route("/rtd")
 def rtd():
-    """sent back OK to calculate Round Trip Delay in ms."""
+    """Réponse pour calcul du Round Trip Delay : voiture -> interface web -> voiture (voir javascript)"""
     data = jsonify({"rtd": "OK"})
     return data
 
 
 @app.route("/", methods=["GET", "POST"])
 def home():
-
-    global Borg, cpu_usage, signal, battery, state, name, fast_turn, full_speed
+    """Route principale (home)"""
+    global PiCar, cpu_usage, signal, battery, state, name, fast_turn, full_speed
 
     if request.method == "GET":
         # Check if user already logged in
@@ -148,10 +146,10 @@ def shutdown():
 
 @app.route("/logout", methods=["POST", "GET"])
 def logout():
+    """Stop la voiture PiCar et logout"""
     global name
-    # stop the Monsterborg if logout
-    Borg.running = False
-    logging.info("Monsterborg stopped when logout")
+    PiCar.running = False
+    logging.info("PiCar stopped when logout")
     session["logged_in"] = False
     logging.info("user " + name + " logout")
     return render_template("login.html")
@@ -159,61 +157,43 @@ def logout():
 
 @app.route("/startstop", methods=["GET", "POST"])
 def startstop():
-    global Borg
+    global PiCar
     if session["logged_in"]:
-        Borg.running = not Borg.running
-        if Borg.running:
-            logging.info("Change state MonsterBorg to START ")
+        PiCar.running = not PiCar.running
+        if PiCar.running:
+            logging.info("Change state PiCar to START ")
         else:
-            logging.info("Change state MonsterBorg to STOP ")
+            logging.info("Change state PiCar to STOP ")
         return ("", 204)
-    else:
-        return render_template("login.html")
-
-
-@app.route("/info", methods=["GET", "POST"])
-def info():
-    global Borg
-    battery = Borg.battery()
-    data = jsonify({"battery": battery, "state": Borg.running})
-    logging.info(data)
-    return data
-
-
-# Utiliser pour pilotage par un autre device (smartphone) avec touch pad
-@app.route("/control", methods=["GET", "POST"])
-def control():
-    if session["logged_in"]:
-        return render_template("control.html")
     else:
         return render_template("login.html")
 
 
 @app.route("/speed", methods=["GET", "POST"])
 def slow():
-    global Borg, speed
+    global PiCar, speed
     logging.info(request)
     if session["logged_in"]:
         speed = request.args.get("speed")
         if speed == "slow":
-            # Borg.speedright = 0.4
-            # Borg.speedleft = 0.4
+            # PiCar.speedright = 0.4
+            # PiCar.speedleft = 0.4
             speed = 0.4
             logging.info("Change speed to SLOW")
 
         if speed == "normal":
-            # Borg.speedright = 0.6
-            # Borg.speedleft = 0.6
+            # PiCar.speedright = 0.6
+            # PiCar.speedleft = 0.6
             speed = 0.6
             logging.info("Change speed to NORMAL")
 
         if speed == "fast":
-            # Borg.speedright = 0.9
-            # Borg.speedleft = 0.9
+            # PiCar.speedright = 0.9
+            # PiCar.speedleft = 0.9
             speed = 0.9
             logging.info("Change speed to FAST")
-        Borg.stop()
-        Borg.start()
+        PiCar.stop()
+        PiCar.start()
         return ("", 204)
     else:
         return render_template("login.html")
@@ -221,22 +201,22 @@ def slow():
 
 @app.route("/left", methods=["GET", "POST"])
 def left():
-    global Borg, speed
+    global PiCar, speed
 
     if session["logged_in"]:
         method = request.args.get("method")
         if method == "stop":
             logging.info("Stop goes left ")
-            Borg.speedright = 0
-            Borg.speedleft = 0
+            PiCar.speedright = 0
+            PiCar.speedleft = 0
         else:
-            Borg.speedright = speed
-            Borg.speedleft = -speed * (1 + steering)
+            PiCar.speedright = speed
+            PiCar.speedleft = -speed * (1 + steering)
             logging.info(
                 "move right with speedright = "
-                + str(Borg.speedright)
+                + str(PiCar.speedright)
                 + "  speedleft = "
-                + str(Borg.speedleft)
+                + str(PiCar.speedleft)
             )
         return "OK"
     else:
@@ -245,22 +225,22 @@ def left():
 
 @app.route("/forward", methods=["GET", "POST"])
 def forward():
-    global Borg, speed, steering
+    global PiCar, speed, steering
 
     if session["logged_in"]:
         method = request.args.get("method")
         if method == "stop":
             logging.info("Stop goes forward ")
-            Borg.speedright = 0
-            Borg.speedleft = 0
+            PiCar.speedright = 0
+            PiCar.speedleft = 0
         else:
-            Borg.speedright = -speed
-            Borg.speedleft = -speed
+            PiCar.speedright = -speed
+            PiCar.speedleft = -speed
             logging.info(
                 "move forward with speedright = "
-                + str(Borg.speedright)
+                + str(PiCar.speedright)
                 + "  speedleft = "
-                + str(Borg.speedleft)
+                + str(PiCar.speedleft)
             )
         return "OK"
     else:
@@ -269,22 +249,22 @@ def forward():
 
 @app.route("/backward", methods=["GET", "POST"])
 def backward():
-    global Borg, speed, steering
+    global PiCar, speed, steering
 
     if session["logged_in"]:
         method = request.args.get("method")
         if method == "stop":
             logging.info("Stop forward ")
-            Borg.speedright = 0
-            Borg.speedleft = 0
+            PiCar.speedright = 0
+            PiCar.speedleft = 0
         else:
-            Borg.speedright = speed
-            Borg.speedleft = speed
+            PiCar.speedright = speed
+            PiCar.speedleft = speed
             logging.info(
                 "move backward / speedright = "
-                + str(Borg.speedright)
+                + str(PiCar.speedright)
                 + "  speedleft = "
-                + str(Borg.speedleft)
+                + str(PiCar.speedleft)
             )
         return "OK"
     else:
@@ -293,22 +273,22 @@ def backward():
 
 @app.route("/right", methods=["GET", "POST"])
 def right():
-    global Borg, speed
+    global PiCar, speed
 
     if session["logged_in"]:
         method = request.args.get("method")
         if method == "stop":
             logging.info("Stop goes right ")
-            Borg.speedright = 0
-            Borg.speedleft = 0
+            PiCar.speedright = 0
+            PiCar.speedleft = 0
         else:
-            Borg.speedright = -speed * (1 + steering)
-            Borg.speedleft = speed
+            PiCar.speedright = -speed * (1 + steering)
+            PiCar.speedleft = speed
             logging.info(
                 "move left / speedright = "
-                + str(Borg.speedright)
+                + str(PiCar.speedright)
                 + "  speedleft = "
-                + str(Borg.speedleft)
+                + str(PiCar.speedleft)
             )
         return "OK"
     else:
@@ -326,8 +306,8 @@ class FlaskApp(threading.Thread):
         app.run(host="0.0.0.0", port=80, debug=False)
 
 
-class MoveBorg(threading.Thread):
-    global Borg
+class MovePiCar(threading.Thread):
+    global PiCar
 
     def __init__(self, threadID, name):
         threading.Thread.__init__(self)
@@ -335,11 +315,11 @@ class MoveBorg(threading.Thread):
         self.name = name
 
     def run(self):
-        logging.info("MoveBorg Thread started")
+        logging.info("MovePiCar Thread started")
         while True:
             try:
-                while Borg.running:
-                    Borg.move()
+                while PiCar.running:
+                    PiCar.move()
             except:
                 logging.error("Move error in Thread")
 
@@ -348,13 +328,13 @@ if __name__ == "__main__":
 
     app.secret_key = os.urandom(12)
 
-    # Create the MonsterBorg car
-    Borg = carLib.car("MonsterBorg")
-    Borg.start()
+    # Create the PiCar car
+    PiCar = carLib.car("PiCar")
+    PiCar.start()
 
     # Create new threads
     thread1 = FlaskApp(1, "FlaskApp")
-    thread2 = MoveBorg(2, "MoveBorg")
+    thread2 = MovePiCar(2, "MovePiCar")
 
     # Start new Threads
     thread1.start()

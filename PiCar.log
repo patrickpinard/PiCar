@@ -1,0 +1,95 @@
+2024-03-12 16:34:49,608 - INFO - Début de la création de la voiture "PiCar"
+2024-03-12 16:34:49,814 - INFO - Etat des batteries 
+2024-03-12 16:34:49,814 - INFO -     Minimum  (rouge)  :  9.40 V
+2024-03-12 16:34:49,814 - INFO -     Moyen    (jaune)  :  11.39 V
+2024-03-12 16:34:49,814 - INFO -     Maximum  (vert)   :  13.38 V
+2024-03-12 16:34:49,814 - INFO - -------------------------------------
+2024-03-12 16:34:49,814 - INFO -     Voltage actuel    :  11.50 V
+2024-03-12 16:34:49,815 - INFO - -------------------------------------
+2024-03-12 16:34:49,815 - INFO - Fin de la création de la voiture "PiCar" 
+2024-03-12 16:34:49,815 - INFO - Démarrage autorisé de la voiture PiCar
+2024-03-12 16:34:49,816 - INFO - FlaskApp Thread started
+2024-03-12 16:34:49,816 - INFO - MovePiCar Thread started
+2024-03-12 16:34:49,835 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:80
+ * Running on http://192.168.1.132:80
+2024-03-12 16:34:49,836 - INFO - [33mPress CTRL+C to quit[0m
+2024-03-12 16:34:49,973 - INFO - received a GET request
+2024-03-12 16:34:49,974 - INFO - login not done, redirect to 'login' page
+2024-03-12 16:34:49,981 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:49] "GET / HTTP/1.1" 200 -
+2024-03-12 16:34:51,981 - INFO - received a POST request
+2024-03-12 16:34:51,982 - INFO - user: admin logged in
+2024-03-12 16:34:51,995 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:51] "POST / HTTP/1.1" 200 -
+2024-03-12 16:34:52,194 - INFO - Initialization successful.
+2024-03-12 16:34:52,195 - INFO - Camera now open.
+2024-03-12 16:34:52,208 - INFO - Camera configuration has been adjusted!
+2024-03-12 16:34:52,212 - INFO - Configuration successful!
+2024-03-12 16:34:52,217 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:52] "[36mGET /static/images/profile.png HTTP/1.1[0m" 304 -
+2024-03-12 16:34:52,352 - INFO - Camera started
+2024-03-12 16:34:52,618 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:52] "GET /video_feed HTTP/1.1" 200 -
+2024-03-12 16:34:53,061 - INFO - lecture des statistiques
+2024-03-12 16:34:53,064 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:53] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:34:53,078 - INFO - niveau batterie : 11.5
+2024-03-12 16:34:53,079 - INFO - <Response 133 bytes [200 OK]>
+2024-03-12 16:34:53,079 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:53] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:34:54,067 - INFO - lecture des statistiques
+2024-03-12 16:34:54,072 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:54] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:34:54,084 - INFO - niveau batterie : 11.5
+2024-03-12 16:34:54,084 - INFO - <Response 134 bytes [200 OK]>
+2024-03-12 16:34:54,085 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:54] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:34:55,064 - INFO - lecture des statistiques
+2024-03-12 16:34:55,070 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:55] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:34:55,075 - INFO - niveau batterie : 11.5
+2024-03-12 16:34:55,076 - INFO - <Response 134 bytes [200 OK]>
+2024-03-12 16:34:55,077 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:55] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:34:56,073 - INFO - lecture des statistiques
+2024-03-12 16:34:56,084 - INFO - niveau batterie : 11.5
+2024-03-12 16:34:56,085 - INFO - <Response 134 bytes [200 OK]>
+2024-03-12 16:34:56,087 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:56] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:34:56,088 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:56] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:34:57,095 - INFO - lecture des statistiques
+2024-03-12 16:34:57,103 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:57] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:34:57,107 - INFO - niveau batterie : 11.5
+2024-03-12 16:34:57,107 - INFO - <Response 134 bytes [200 OK]>
+2024-03-12 16:34:57,108 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:57] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:34:58,085 - INFO - lecture des statistiques
+2024-03-12 16:34:58,091 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:58] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:34:58,099 - INFO - niveau batterie : 11.5
+2024-03-12 16:34:58,099 - INFO - <Response 134 bytes [200 OK]>
+2024-03-12 16:34:58,100 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:58] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:34:59,081 - INFO - lecture des statistiques
+2024-03-12 16:34:59,091 - INFO - niveau batterie : 11.5
+2024-03-12 16:34:59,092 - INFO - <Response 134 bytes [200 OK]>
+2024-03-12 16:34:59,093 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:59] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:34:59,119 - INFO - 192.168.1.116 - - [12/Mar/2024 16:34:59] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:35:00,129 - INFO - lecture des statistiques
+2024-03-12 16:35:00,137 - INFO - 192.168.1.116 - - [12/Mar/2024 16:35:00] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:35:00,141 - INFO - niveau batterie : 11.5
+2024-03-12 16:35:00,141 - INFO - <Response 134 bytes [200 OK]>
+2024-03-12 16:35:00,142 - INFO - 192.168.1.116 - - [12/Mar/2024 16:35:00] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:35:01,063 - INFO - lecture des statistiques
+2024-03-12 16:35:01,067 - INFO - 192.168.1.116 - - [12/Mar/2024 16:35:01] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:35:01,074 - INFO - niveau batterie : 11.5
+2024-03-12 16:35:01,074 - INFO - <Response 134 bytes [200 OK]>
+2024-03-12 16:35:01,075 - INFO - 192.168.1.116 - - [12/Mar/2024 16:35:01] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:35:02,061 - INFO - lecture des statistiques
+2024-03-12 16:35:02,066 - INFO - 192.168.1.116 - - [12/Mar/2024 16:35:02] "GET /rtd HTTP/1.1" 200 -
+2024-03-12 16:35:02,072 - INFO - niveau batterie : 11.5
+2024-03-12 16:35:02,072 - INFO - <Response 134 bytes [200 OK]>
+2024-03-12 16:35:02,073 - INFO - 192.168.1.116 - - [12/Mar/2024 16:35:02] "GET /stats HTTP/1.1" 200 -
+2024-03-12 16:35:02,657 - ERROR - Exception during process_requests()
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/picamera2/previews/null_preview.py", line 85, in handle_request
+    picam2.process_requests(self)
+  File "/usr/lib/python3/dist-packages/picamera2/picamera2.py", line 1257, in process_requests
+    encoder.encode(encoder.name, req)
+  File "/usr/lib/python3/dist-packages/picamera2/encoders/encoder.py", line 210, in encode
+    self._encode(stream, request)
+  File "/usr/lib/python3/dist-packages/picamera2/encoders/multi_encoder.py", line 69, in _encode
+    self.tasks.put(self.threads.submit(self.do_encode, request, stream))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/concurrent/futures/thread.py", line 167, in submit
+    raise RuntimeError('cannot schedule new futures after shutdown')
+RuntimeError: cannot schedule new futures after shutdown
+2024-03-12 16:35:02,901 - INFO - Camera stopped
