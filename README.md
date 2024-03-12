@@ -1,4 +1,7 @@
-# PiCar V1 
+# PiCar V2
+
+V1 : initial version
+V2 : Add Battery and Wifi connection control
 
 Voiture electrique équipée d'un Raspberry Pi 4 et une carte driver moteur de ThunderBorg via interface web. 
 
